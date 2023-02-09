@@ -207,13 +207,14 @@ Napi::Value NodeSRT::Read(const Napi::CallbackInfo& info) {
   uint8_t *buffer = (uint8_t *)malloc(bufferSize);
   memset(buffer, 0, bufferSize);
 
-  int nb = srt_recvmsg(socketValue, (char *)buffer, (int)bufferSize);
-  if (nb == SRT_ERROR) {
-    string err(string("srt_recvmsg: ")
-      + string(srt_getlasterror_str()));
-    Napi::Error::New(env, err).ThrowAsJavaScriptException();
-    return Napi::Number::New(env, SRT_ERROR);
-  }
+//TIGER COMMENTED OUT
+//   int nb = srt_recvmsg(socketValue, (char *)buffer, (int)bufferSize);
+//   if (nb == SRT_ERROR) {
+//     string err(string("srt_recvmsg: ")
+//       + string(srt_getlasterror_str()));
+//     Napi::Error::New(env, err).ThrowAsJavaScriptException();
+//     return Napi::Number::New(env, SRT_ERROR);
+//   }
 
   // Q: why not using char as data/template type?
   Napi::Value nbuff = Napi::Buffer<uint8_t>::Copy(env, buffer, nb);
