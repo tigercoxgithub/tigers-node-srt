@@ -209,15 +209,12 @@ Napi::Value NodeSRT::Read(const Napi::CallbackInfo& info) {
 
 
    int nb = srt_recvmsg(socketValue, (char *)buffer, (int)bufferSize);
-  //TIGER EDITED OUT
+  //TIGER EDITED 
   if (nb == SRT_ERROR) {
-    //string err(string("srt_recvmsg: ")
-     // + string(srt_getlasterror_str()));
-    //Napi::Error::New(env, err).ThrowAsJavaScriptException();
-    //return Napi::Number::New(env, SRT_ERROR);
-    Napi::Buffer<uint8_t> buffer(1);
-    buffer[0] = 0;
-    return buffer;
+    string err(string("srt_recvmsg: ")
+     + string(srt_getlasterror_str()));
+    Napi::Error::New(env, err).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, SRT_ERROR);
   }
 
   // Q: why not using char as data/template type?
