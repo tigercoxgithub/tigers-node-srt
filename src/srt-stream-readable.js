@@ -140,13 +140,24 @@ class SRTReadStream extends Readable {
       return;
     }
     let remainingBytes = bytes;
+    
+    let buffer = null;
     while(true) {
-      const buffer = this.srt.read(this.fd, bytes);
+      
+      try {
+      buffer = this.srt.read(this.fd, bytes);
+      } catch (err) { 
+        console.log("Tiger added this.srt.read err: "+err);
+        this.close();
+        break;
+      }
+      
       if (buffer === null) { // connection likely died
         debug("Socket read call returned 'null'");
         this.close();
         break;
       }
+      
       // we expect a Buffer object here, but
       // -1 is the SRT_ERROR value that would get returned
       // if there is no data to read yet/anymore
@@ -167,8 +178,9 @@ class SRTReadStream extends Readable {
         debug("Readable.push returned 'false' at remaining bytes:", remainingBytes);
         break;
       }
-    }
-  }
+    } //end 'if (this.push(buffer))'
+    
+  } //end 'while (true)'
 
   /**
    * @see https://nodejs.org/api/stream.html#stream_readable_read_size_1
